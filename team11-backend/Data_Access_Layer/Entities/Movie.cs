@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace Data_Access_Layer.Entities
 {
     public class Movie
+
     {
         public int Id { get; set; }
         public string FilmName { get; set; }
@@ -25,6 +26,7 @@ namespace Data_Access_Layer.Entities
         public float VoteAverage { get; set; }
         public int VoteCount { get; set; }
         public ICollection<MovieGenre> MovieGenres { get; set; }
+
 
     }
 }

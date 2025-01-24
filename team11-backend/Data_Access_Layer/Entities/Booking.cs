@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 
 namespace Data_Access_Layer.Entities
 {
+
     public class Booking
+
     {
         public int Id { get; set; }
         public Session Session { get; set; }

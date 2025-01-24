@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Data_Access_Layer.Entities
 {
     public class Session
+
     {
         public int Id { get; set; }
         public Movie Movie { get; set; }
