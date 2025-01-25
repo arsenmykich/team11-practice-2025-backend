@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Data_Access_Layer.Entities
 {
-    internal class SalesStatistics
+    public class SalesStatistics
+
     {
         public int Id { get; set; }
         public Session Session { get; set; }

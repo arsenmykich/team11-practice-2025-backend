@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Data_Access_Layer.Entities
 {
-    internal class Movie
+    public class Movie
+
     {
         public int Id { get; set; }
         public string FilmName { get; set; }
@@ -20,11 +21,12 @@ namespace Data_Access_Layer.Entities
         public int AgeRating { get; set; }
         public DateTime ReleaseDate { get; set; }
         public string PosterPath { get; set; }
-        public ICollection<Actor> Actors { get; set; }
+        public ICollection<MovieActor> MovieActors { get; set; }
         public string BackgroundImagePath { get; set; }
         public float VoteAverage { get; set; }
         public int VoteCount { get; set; }
-        public ICollection<Genre> Genres { get; set; }
+        public ICollection<MovieGenre> MovieGenres { get; set; }
+
 
     }
 }

@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 
 namespace Data_Access_Layer.Entities
 {
-    internal class Director
+
+    public class Director
+
     {
         public int Id { get; set; }
         public string Name { get; set; }

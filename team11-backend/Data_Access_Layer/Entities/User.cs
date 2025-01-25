@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Data_Access_Layer.Entities
 {
-    internal class User
+    public class User
+
     {
         public int Id { get; set; }
         public string Name { get; set; }

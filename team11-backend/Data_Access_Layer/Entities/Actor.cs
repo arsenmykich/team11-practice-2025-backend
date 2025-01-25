@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Data_Access_Layer.Entities
 {
-    internal class Actor
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public ICollection<Movie> Movies { get; set; }
+  public class Actor
+  {
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public ICollection<MovieActor> MovieActors { get; set; }
     }
 }

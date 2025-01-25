@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Data_Access_Layer.Entities
 {
-    internal class MovieGenre
+    public class MovieGenre
+
     {
         public int MovieId { get; set; }
         public Movie Movie { get; set; }

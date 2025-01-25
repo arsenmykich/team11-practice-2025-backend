@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +8,7 @@ using Data_Access_Layer.Entities;
 
 namespace Data_Access_Layer.Data
 {
-    internal class CinemaContext : DbContext
+    public class CinemaContext : DbContext
     {
         public CinemaContext(DbContextOptions<CinemaContext> options) : base(options)
         {   }
@@ -23,28 +23,61 @@ namespace Data_Access_Layer.Data
         public DbSet<Entities.User> Users { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Movie>()
-                .HasMany(m => m.Actors)
-                .WithMany(a => a.Movies)
-                .UsingEntity<MovieActor>(
-                    am => am.HasOne<Actor>().WithMany(),
-                    am => am.HasOne<Movie>().WithMany(),
-                    am =>
-                    {
-                        am.HasKey(am => new { am.ActorId, am.MovieId });
-                        am.ToTable("MovieActors");
-                    });
-            modelBuilder.Entity<Movie>()
-                .HasMany(m => m.Genres)
-                .WithMany(g => g.Movies)
-                .UsingEntity<MovieGenre>(
-                    mg => mg.HasOne<Genre>().WithMany(),
-                    mg => mg.HasOne<Movie>().WithMany(),
-                    mg =>
-                    {
-                        mg.HasKey(mg => new { mg.GenreId, mg.MovieId });
-                        mg.ToTable("MovieGenres");
-                    });
+            //modelBuilder.Entity<Movie>()
+            //    .HasMany(m => m.Actors)
+            //    .WithMany(a => a.Movies)
+            //    .UsingEntity<MovieActor>(
+            //        am => am.HasOne<Actor>().WithMany(),
+            //        am => am.HasOne<Movie>().WithMany(),
+            //        am =>
+            //        {
+            //            am.HasKey(am => new { am.ActorId, am.MovieId });
+            //            am.ToTable("MovieActors");
+            //        });
+            modelBuilder.Entity<MovieActor>()
+                  .HasKey(ma => new { ma.MovieId, ma.ActorId }); // Composite key
+
+            modelBuilder.Entity<MovieActor>()
+                .HasOne(ma => ma.Movie)
+                .WithMany(m => m.MovieActors)
+                .HasForeignKey(ma => ma.MovieId);
+
+            modelBuilder.Entity<MovieActor>()
+                .HasOne(ma => ma.Actor)
+                .WithMany(a => a.MovieActors)
+                .HasForeignKey(ma => ma.ActorId);
+
+
+
+            //modelBuilder.Entity<Movie>()
+            //    .HasMany(m => m.Genres)
+            //    .WithMany(g => g.Movies)
+            //    .UsingEntity<MovieGenre>(
+            //        mg => mg.HasOne<Genre>().WithMany(),
+            //        mg => mg.HasOne<Movie>().WithMany(),
+            //        mg =>
+            //        {
+            //            mg.HasKey(mg => new { mg.GenreId, mg.MovieId });
+            //            mg.ToTable("MovieGenres");
+            //        });
+
+
+
+            modelBuilder.Entity<MovieGenre>()
+                  .HasKey(mg => new { mg.MovieId, mg.GenreId }); // Composite key
+            modelBuilder.Entity<MovieGenre>()
+                .HasOne(mg => mg.Movie)
+                .WithMany(m => m.MovieGenres)
+                .HasForeignKey(mg => mg.MovieId);
+            modelBuilder.Entity<MovieGenre>()
+                .HasOne(mg => mg.Genre)
+                .WithMany(g => g.MovieGenres)
+                .HasForeignKey(mg => mg.GenreId);
+
+
+
+
+
             modelBuilder.Entity<Movie>()
                 .HasOne(m => m.Director)
                 .WithMany(d => d.Movies)
