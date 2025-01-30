@@ -15,47 +15,47 @@ namespace Web_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RolesController : ControllerBase
+    public class SessionsController : ControllerBase
     {
-        private readonly RoleService _roleService;
-        public RolesController(RoleService roleService)
+        private readonly SessionService _sessionService;
+        public SessionsController(SessionService sessionService)
         {
-            _roleService = roleService;
+            _sessionService = sessionService;
         }
         [HttpGet]
         public IActionResult Get()
         {
-            var roles = _roleService.GetAllRoles();
-            return Ok(roles);
+            var sessions = _sessionService.GetAllSessions();
+            return Ok(sessions);
         }
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var role = _roleService.GetRoleById(id);
-            if (role == null)
+            var session = _sessionService.GetSessionById(id);
+            if (session == null)
                 return NotFound();
-            return Ok(role);
+            return Ok(session);
         }
         [HttpPost]
-        public IActionResult Post([FromBody] RoleDTO roleDTO)
+        public IActionResult Post([FromBody] SessionDTO sessionDTO)
         {
-            if (roleDTO == null)
+            if (sessionDTO == null)
                 return BadRequest();
-            _roleService.AddRole(roleDTO);
+            _sessionService.AddSession(sessionDTO);
             return Ok();
         }
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] RoleDTO roleDTO)
+        public IActionResult Put(int id, [FromBody] SessionDTO sessionDTO)
         {
-            if (roleDTO == null || id != roleDTO.Id)
+            if (sessionDTO == null || id != sessionDTO.Id)
                 return BadRequest();
-            _roleService.UpdateRole(roleDTO);
+            _sessionService.UpdateSession(sessionDTO);
             return NoContent();
         }
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _roleService.DeleteRole(id);
+            _sessionService.DeleteSession(id);
             return NoContent();
         }
     }

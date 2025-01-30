@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace Data_Access_Layer.Entities
 {
     public class MovieActor
-
     {
         public int MovieId { get; set; }
         public Movie Movie { get; set; }

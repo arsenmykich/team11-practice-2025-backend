@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data_Access_Layer.Entities
+namespace Business_Logic_Layer.DTOs
 {
-    public class Genre
+    public class RoleDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<MovieGenre> MovieGenres { get; set; }
     }
 }

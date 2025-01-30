@@ -15,47 +15,47 @@ namespace Web_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RolesController : ControllerBase
+    public class UsersContoller : ControllerBase
     {
-        private readonly RoleService _roleService;
-        public RolesController(RoleService roleService)
+        private readonly UserService _userService;
+        public UsersContoller(UserService userService)
         {
-            _roleService = roleService;
+            _userService = userService;
         }
         [HttpGet]
         public IActionResult Get()
         {
-            var roles = _roleService.GetAllRoles();
-            return Ok(roles);
+            var users = _userService.GetAllUsers();
+            return Ok(users);
         }
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var role = _roleService.GetRoleById(id);
-            if (role == null)
+            var user = _userService.GetUserById(id);
+            if (user == null)
                 return NotFound();
-            return Ok(role);
+            return Ok(user);
         }
         [HttpPost]
-        public IActionResult Post([FromBody] RoleDTO roleDTO)
+        public IActionResult Post([FromBody] UserDTO userDTO)
         {
-            if (roleDTO == null)
+            if (userDTO == null)
                 return BadRequest();
-            _roleService.AddRole(roleDTO);
+            _userService.AddUser(userDTO);
             return Ok();
         }
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] RoleDTO roleDTO)
+        public IActionResult Put(int id, [FromBody] UserDTO userDTO)
         {
-            if (roleDTO == null || id != roleDTO.Id)
+            if (userDTO == null || id != userDTO.Id)
                 return BadRequest();
-            _roleService.UpdateRole(roleDTO);
+            _userService.UpdateUser(userDTO);
             return NoContent();
         }
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _roleService.DeleteRole(id);
+            _userService.DeleteUser(id);
             return NoContent();
         }
     }

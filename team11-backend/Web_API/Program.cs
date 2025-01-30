@@ -15,6 +15,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 using Data_Access_Layer.Repositories;
+using Business_Logic_Layer.Mappings;
+using AutoMapper;
+using Business_Logic_Layer.Services;
+using Business_Logic_Layer.DTOs;
+
+
+
 namespace Web_API
 {
     public class Program
@@ -32,7 +39,20 @@ namespace Web_API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            
             builder.Services.AddScoped<UnitOfWork>();
+            //builder.Services.AddAutoMapper(typeof(MappingProfile));
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
+            builder.Services.AddScoped<MovieService>();
+            builder.Services.AddScoped<ActorService>();
+            builder.Services.AddScoped<BookingService>();
+            builder.Services.AddScoped<DirectorService>();
+            builder.Services.AddScoped<GenreService>();
+            builder.Services.AddScoped<RoleService>();
+            builder.Services.AddScoped<SalesStatisticsService>();
+            builder.Services.AddScoped<SessionService>();
+            builder.Services.AddScoped<UserService>();
+
 
             var app = builder.Build();
 

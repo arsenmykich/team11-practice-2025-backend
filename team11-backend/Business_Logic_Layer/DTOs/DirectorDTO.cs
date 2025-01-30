@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Data_Access_Layer.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data_Access_Layer.Entities
+namespace Business_Logic_Layer.DTOs
 {
-    public class Genre
+    public class DirectorDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<MovieGenre> MovieGenres { get; set; }
     }
 }

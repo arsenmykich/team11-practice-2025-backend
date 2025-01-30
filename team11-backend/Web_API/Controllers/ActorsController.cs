@@ -10,52 +10,53 @@ using Data_Access_Layer.Entities;
 using Data_Access_Layer.Repositories;
 using Business_Logic_Layer.DTOs;
 using Business_Logic_Layer.Services;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
 
 namespace Web_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RolesController : ControllerBase
+    public class ActorsController : ControllerBase
     {
-        private readonly RoleService _roleService;
-        public RolesController(RoleService roleService)
+        private readonly ActorService _actorService;
+        public ActorsController(ActorService actorService)
         {
-            _roleService = roleService;
+            _actorService = actorService;
         }
         [HttpGet]
         public IActionResult Get()
         {
-            var roles = _roleService.GetAllRoles();
-            return Ok(roles);
+            var actors = _actorService.GetAllActors();
+            return Ok(actors);
         }
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var role = _roleService.GetRoleById(id);
-            if (role == null)
+            var actor = _actorService.GetActorById(id);
+            if (actor == null)
                 return NotFound();
-            return Ok(role);
+            return Ok(actor);
         }
         [HttpPost]
-        public IActionResult Post([FromBody] RoleDTO roleDTO)
+        public IActionResult Post([FromBody] ActorDTO actorDTO)
         {
-            if (roleDTO == null)
+            if (actorDTO == null)
                 return BadRequest();
-            _roleService.AddRole(roleDTO);
+            _actorService.AddActor(actorDTO);
             return Ok();
         }
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] RoleDTO roleDTO)
+        public IActionResult Put(int id, [FromBody] ActorDTO actorDTO)
         {
-            if (roleDTO == null || id != roleDTO.Id)
+            if (actorDTO == null || id != actorDTO.Id)
                 return BadRequest();
-            _roleService.UpdateRole(roleDTO);
+            _actorService.UpdateActor(actorDTO);
             return NoContent();
         }
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _roleService.DeleteRole(id);
+            _actorService.DeleteActor(id);
             return NoContent();
         }
     }
