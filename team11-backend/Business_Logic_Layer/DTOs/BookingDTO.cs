@@ -1,20 +1,17 @@
-﻿using System;
+﻿using Data_Access_Layer.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data_Access_Layer.Entities
+namespace Business_Logic_Layer.DTOs
 {
-
-    public class Booking
+    public class BookingDTO
     {
         public int Id { get; set; }
-        public Session Session { get; set; }
         public int SessionId { get; set; }
         public DateTime BookingDate { get; set; }
-        public User User { get; set; }
         public int UserId { get; set; }
         public float Price { get; set; }
         public string ChairNumber { get; set; }

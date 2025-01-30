@@ -15,47 +15,47 @@ namespace Web_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RolesController : ControllerBase
+    public class DirectorsController : ControllerBase
     {
-        private readonly RoleService _roleService;
-        public RolesController(RoleService roleService)
+        private readonly DirectorService _directorService;
+        public DirectorsController(DirectorService directorService)
         {
-            _roleService = roleService;
+            _directorService = directorService;
         }
         [HttpGet]
         public IActionResult Get()
         {
-            var roles = _roleService.GetAllRoles();
-            return Ok(roles);
+            var directors = _directorService.GetAllDirectors();
+            return Ok(directors);
         }
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var role = _roleService.GetRoleById(id);
-            if (role == null)
+            var director = _directorService.GetDirectorById(id);
+            if (director == null)
                 return NotFound();
-            return Ok(role);
+            return Ok(director);
         }
         [HttpPost]
-        public IActionResult Post([FromBody] RoleDTO roleDTO)
+        public IActionResult Post([FromBody] DirectorDTO directorDTO)
         {
-            if (roleDTO == null)
+            if (directorDTO == null)
                 return BadRequest();
-            _roleService.AddRole(roleDTO);
+            _directorService.AddDirector(directorDTO);
             return Ok();
         }
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] RoleDTO roleDTO)
+        public IActionResult Put(int id, [FromBody] DirectorDTO directorDTO)
         {
-            if (roleDTO == null || id != roleDTO.Id)
+            if (directorDTO == null || id != directorDTO.Id)
                 return BadRequest();
-            _roleService.UpdateRole(roleDTO);
+            _directorService.UpdateDirector(directorDTO);
             return NoContent();
         }
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _roleService.DeleteRole(id);
+            _directorService.DeleteDirector(id);
             return NoContent();
         }
     }

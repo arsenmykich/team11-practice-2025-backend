@@ -1,19 +1,18 @@
-﻿using System;
+﻿using Data_Access_Layer.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data_Access_Layer.Entities
+namespace Business_Logic_Layer.DTOs
 {
-    public class User
+    public class UserDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public Role Role { get; set; }
         public int RoleId { get; set; }
-        public ICollection<Booking> Bookings { get; set; }
     }
 }

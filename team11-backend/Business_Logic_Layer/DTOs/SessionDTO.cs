@@ -1,22 +1,19 @@
-﻿using System;
+﻿using Data_Access_Layer.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data_Access_Layer.Entities
+namespace Business_Logic_Layer.DTOs
 {
-    public class Session
+    public class SessionDTO
     {
         public int Id { get; set; }
-        public Movie Movie { get; set; }
         public int MovieId { get; set; }
-        public ICollection<SalesStatistics> SalesStatistics { get; set; }
-        public ICollection<Booking> Bookings { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public float Price { get; set; }
         public string Hall { get; set; }
-
     }
 }

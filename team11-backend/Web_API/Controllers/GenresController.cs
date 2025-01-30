@@ -15,47 +15,47 @@ namespace Web_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RolesController : ControllerBase
+    public class GenresController : ControllerBase
     {
-        private readonly RoleService _roleService;
-        public RolesController(RoleService roleService)
+        private readonly GenreService _genreService;
+        public GenresController(GenreService genreService)
         {
-            _roleService = roleService;
+            _genreService = genreService;
         }
         [HttpGet]
         public IActionResult Get()
         {
-            var roles = _roleService.GetAllRoles();
-            return Ok(roles);
+            var genres = _genreService.GetAllGenres();
+            return Ok(genres);
         }
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var role = _roleService.GetRoleById(id);
-            if (role == null)
+            var genre = _genreService.GetGenreById(id);
+            if (genre == null)
                 return NotFound();
-            return Ok(role);
+            return Ok(genre);
         }
         [HttpPost]
-        public IActionResult Post([FromBody] RoleDTO roleDTO)
+        public IActionResult Post([FromBody] GenreDTO genreDTO)
         {
-            if (roleDTO == null)
+            if (genreDTO == null)
                 return BadRequest();
-            _roleService.AddRole(roleDTO);
+            _genreService.AddGenre(genreDTO);
             return Ok();
         }
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] RoleDTO roleDTO)
+        public IActionResult Put(int id, [FromBody] GenreDTO genreDTO)
         {
-            if (roleDTO == null || id != roleDTO.Id)
+            if (genreDTO == null || id != genreDTO.Id)
                 return BadRequest();
-            _roleService.UpdateRole(roleDTO);
+            _genreService.UpdateGenre(genreDTO);
             return NoContent();
         }
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _roleService.DeleteRole(id);
+            _genreService.DeleteGenre(id);
             return NoContent();
         }
     }

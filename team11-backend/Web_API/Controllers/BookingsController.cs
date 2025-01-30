@@ -15,47 +15,47 @@ namespace Web_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RolesController : ControllerBase
+    public class BookingsController : ControllerBase
     {
-        private readonly RoleService _roleService;
-        public RolesController(RoleService roleService)
+        private readonly BookingService _bookingService;
+        public BookingsController(BookingService bookingService)
         {
-            _roleService = roleService;
+            _bookingService = bookingService;
         }
         [HttpGet]
         public IActionResult Get()
         {
-            var roles = _roleService.GetAllRoles();
-            return Ok(roles);
+            var bookings = _bookingService.GetAllBookings();
+            return Ok(bookings);
         }
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var role = _roleService.GetRoleById(id);
-            if (role == null)
+            var booking = _bookingService.GetBookingById(id);
+            if (booking == null)
                 return NotFound();
-            return Ok(role);
+            return Ok(booking);
         }
         [HttpPost]
-        public IActionResult Post([FromBody] RoleDTO roleDTO)
+        public IActionResult Post([FromBody] BookingDTO bookingDTO)
         {
-            if (roleDTO == null)
+            if (bookingDTO == null)
                 return BadRequest();
-            _roleService.AddRole(roleDTO);
+            _bookingService.AddBooking(bookingDTO);
             return Ok();
         }
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] RoleDTO roleDTO)
+        public IActionResult Put(int id, [FromBody] BookingDTO bookingDTO)
         {
-            if (roleDTO == null || id != roleDTO.Id)
+            if (bookingDTO == null || id != bookingDTO.Id)
                 return BadRequest();
-            _roleService.UpdateRole(roleDTO);
+            _bookingService.UpdateBooking(bookingDTO);
             return NoContent();
         }
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _roleService.DeleteRole(id);
+            _bookingService.DeleteBooking(id);
             return NoContent();
         }
     }
