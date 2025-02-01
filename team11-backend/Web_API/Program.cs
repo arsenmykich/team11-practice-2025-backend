@@ -1,4 +1,4 @@
-using System.Text;
+ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Data_Access_Layer.Data;
 using Data_Access_Layer.Entities;
@@ -52,6 +52,8 @@ namespace Web_API
             builder.Services.AddScoped<SalesStatisticsService>();
             builder.Services.AddScoped<SessionService>();
             builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<SeatService>();
+            builder.Services.AddScoped<HallService>();
 
 
             var app = builder.Build();

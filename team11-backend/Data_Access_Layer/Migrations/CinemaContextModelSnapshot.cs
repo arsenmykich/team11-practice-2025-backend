@@ -50,12 +50,11 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ChairNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<float>("Price")
                         .HasColumnType("real");
+
+                    b.Property<int>("SeatId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("SessionId")
                         .HasColumnType("integer");
@@ -64,6 +63,8 @@ namespace Data_Access_Layer.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SeatId");
 
                     b.HasIndex("SessionId");
 
@@ -104,6 +105,29 @@ namespace Data_Access_Layer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Genres");
+                });
+
+            modelBuilder.Entity("Data_Access_Layer.Entities.Hall", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Columns")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Rows")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Halls");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Entities.Movie", b =>
@@ -230,6 +254,30 @@ namespace Data_Access_Layer.Migrations
                     b.ToTable("SalesStatistics");
                 });
 
+            modelBuilder.Entity("Data_Access_Layer.Entities.Seat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Column")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("HallId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Row")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HallId");
+
+                    b.ToTable("Seats");
+                });
+
             modelBuilder.Entity("Data_Access_Layer.Entities.Session", b =>
                 {
                     b.Property<int>("Id")
@@ -241,9 +289,8 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Hall")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("HallId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("MovieId")
                         .HasColumnType("integer");
@@ -255,6 +302,8 @@ namespace Data_Access_Layer.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HallId");
 
                     b.HasIndex("MovieId");
 
@@ -293,6 +342,12 @@ namespace Data_Access_Layer.Migrations
 
             modelBuilder.Entity("Data_Access_Layer.Entities.Booking", b =>
                 {
+                    b.HasOne("Data_Access_Layer.Entities.Seat", "Seat")
+                        .WithMany("Bookings")
+                        .HasForeignKey("SeatId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Data_Access_Layer.Entities.Session", "Session")
                         .WithMany("Bookings")
                         .HasForeignKey("SessionId")
@@ -304,6 +359,8 @@ namespace Data_Access_Layer.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Seat");
 
                     b.Navigation("Session");
 
@@ -370,13 +427,32 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("Session");
                 });
 
+            modelBuilder.Entity("Data_Access_Layer.Entities.Seat", b =>
+                {
+                    b.HasOne("Data_Access_Layer.Entities.Hall", "Hall")
+                        .WithMany("Seats")
+                        .HasForeignKey("HallId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hall");
+                });
+
             modelBuilder.Entity("Data_Access_Layer.Entities.Session", b =>
                 {
+                    b.HasOne("Data_Access_Layer.Entities.Hall", "Hall")
+                        .WithMany("Sessions")
+                        .HasForeignKey("HallId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Data_Access_Layer.Entities.Movie", "Movie")
                         .WithMany("Sessions")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Hall");
 
                     b.Navigation("Movie");
                 });
@@ -386,7 +462,7 @@ namespace Data_Access_Layer.Migrations
                     b.HasOne("Data_Access_Layer.Entities.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Role");
@@ -407,6 +483,13 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("MovieGenres");
                 });
 
+            modelBuilder.Entity("Data_Access_Layer.Entities.Hall", b =>
+                {
+                    b.Navigation("Seats");
+
+                    b.Navigation("Sessions");
+                });
+
             modelBuilder.Entity("Data_Access_Layer.Entities.Movie", b =>
                 {
                     b.Navigation("MovieActors");
@@ -419,6 +502,11 @@ namespace Data_Access_Layer.Migrations
             modelBuilder.Entity("Data_Access_Layer.Entities.Role", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Data_Access_Layer.Entities.Seat", b =>
+                {
+                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Entities.Session", b =>

@@ -14,6 +14,6 @@ namespace Business_Logic_Layer.DTOs
         public DateTime BookingDate { get; set; }
         public int UserId { get; set; }
         public float Price { get; set; }
-        public string ChairNumber { get; set; }
+        public int SeatId { get; set; }
     }
 }
