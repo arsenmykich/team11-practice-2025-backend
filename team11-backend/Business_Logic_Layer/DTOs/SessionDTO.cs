@@ -14,6 +14,6 @@ namespace Business_Logic_Layer.DTOs
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public float Price { get; set; }
-        public string Hall { get; set; }
+        public int HallId { get; set; }
     }
 }

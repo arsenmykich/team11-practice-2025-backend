@@ -22,6 +22,9 @@ namespace Data_Access_Layer.Repositories
         private GenericRepository<SalesStatistics> salesStatisticsRepository;
         private GenericRepository<Session> sessionRepository;
         private GenericRepository<User> userRepository;
+        private GenericRepository<Seat> seatRepository;
+        private GenericRepository<Hall> hallRepository;
+
 
         // Inject CinemaContext via constructor
         public UnitOfWork(CinemaContext context)
@@ -136,6 +139,30 @@ namespace Data_Access_Layer.Repositories
                     this.userRepository = new GenericRepository<User>(context);
                 }
                 return userRepository;
+            }
+        }
+
+        public GenericRepository<Seat> SeatRepository
+        {
+            get
+            {
+                if (this.seatRepository == null)
+                {
+                    this.seatRepository = new GenericRepository<Seat>(context);
+                }
+                return seatRepository;
+            }
+        }
+
+        public GenericRepository<Hall> HallRepository
+        {
+            get
+            {
+                if (this.hallRepository == null)
+                {
+                    this.hallRepository = new GenericRepository<Hall>(context);
+                }
+                return hallRepository;
             }
         }
 

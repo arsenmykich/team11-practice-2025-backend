@@ -21,6 +21,8 @@ namespace Data_Access_Layer.Data
         public DbSet<Entities.SalesStatistics> SalesStatistics { get; set; }
         public DbSet<Entities.Session> Sessions { get; set; }
         public DbSet<Entities.User> Users { get; set; }
+        public DbSet<Entities.Hall> Halls { get; set; }
+        public DbSet<Entities.Seat> Seats { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<Movie>()
@@ -40,12 +42,14 @@ namespace Data_Access_Layer.Data
             modelBuilder.Entity<MovieActor>()
                 .HasOne(ma => ma.Movie)
                 .WithMany(m => m.MovieActors)
-                .HasForeignKey(ma => ma.MovieId);
+                .HasForeignKey(ma => ma.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<MovieActor>()
                 .HasOne(ma => ma.Actor)
                 .WithMany(a => a.MovieActors)
-                .HasForeignKey(ma => ma.ActorId);
+                .HasForeignKey(ma => ma.ActorId)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
 
@@ -68,11 +72,15 @@ namespace Data_Access_Layer.Data
             modelBuilder.Entity<MovieGenre>()
                 .HasOne(mg => mg.Movie)
                 .WithMany(m => m.MovieGenres)
-                .HasForeignKey(mg => mg.MovieId);
+                .HasForeignKey(mg => mg.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
             modelBuilder.Entity<MovieGenre>()
                 .HasOne(mg => mg.Genre)
                 .WithMany(g => g.MovieGenres)
-                .HasForeignKey(mg => mg.GenreId);
+                .HasForeignKey(mg => mg.GenreId)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
 
@@ -81,28 +89,64 @@ namespace Data_Access_Layer.Data
             modelBuilder.Entity<Movie>()
                 .HasOne(m => m.Director)
                 .WithMany(d => d.Movies)
-                .HasForeignKey(m => m.DirectorId);
+                .HasForeignKey(m => m.DirectorId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Session>()
                 .HasOne(s => s.Movie)
                 .WithMany(m => m.Sessions)
-                .HasForeignKey(s => s.MovieId);
+                .HasForeignKey(s => s.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Session>()
+                .HasOne(s => s.Hall)
+                .WithMany(h => h.Sessions)
+                .HasForeignKey(s => s.HallId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+
+
             modelBuilder.Entity<SalesStatistics>()
                 .HasOne(ss => ss.Session)
                 .WithMany(s => s.SalesStatistics)
-                .HasForeignKey(ss => ss.SessionId);
+                .HasForeignKey(ss => ss.SessionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.Seat)
+                .WithMany(s => s.Bookings)
+                .HasForeignKey(b => b.SeatId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
             modelBuilder.Entity<Booking>()
                 .HasOne(s => s.Session)
                 .WithMany(b => b.Bookings)
-                .HasForeignKey(s => s.SessionId);
+                .HasForeignKey(s => s.SessionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
             modelBuilder.Entity<Booking>()
                 .HasOne(u => u.User)
                 .WithMany(b => b.Bookings)
-                .HasForeignKey(u => u.UserId);
+                .HasForeignKey(u => u.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Role)
                 .WithMany(r => r.Users)
-                .HasForeignKey(u => u.RoleId);
+                .HasForeignKey(u => u.RoleId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Hall>()
+                .HasMany(h => h.Seats)
+                .WithOne(s => s.Hall)
+                .HasForeignKey(s => s.HallId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
         }
 
     }
