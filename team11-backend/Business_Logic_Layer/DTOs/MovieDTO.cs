@@ -19,5 +19,10 @@ namespace Business_Logic_Layer.DTOs
         public string BackgroundImagePath { get; set; }
         public float VoteAverage { get; set; }
         public int VoteCount { get; set; }
+        public int DirectorId { get; set; }
+
+        public List<int> Genres { get; set; }
+        public List<int> Actors { get; set; }
     }
+
 }
