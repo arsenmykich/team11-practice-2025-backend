@@ -36,16 +36,45 @@ namespace Business_Logic_Layer.Services
         public void AddMovie(MovieDTO movieDTO)
         {
             var movie = _mapper.Map<Movie>(movieDTO);
+
+            // Fetch genres and actors from DB
+            movie.MovieGenres = movieDTO.Genres
+                .Select(genreId => new MovieGenre { GenreId = genreId })
+                .ToList();
+
+            movie.MovieActors = movieDTO.Actors
+                .Select(actorId => new MovieActor { ActorId = actorId })
+                .ToList();
+
             _unitOfWork.MovieRepository.Insert(movie);
             _unitOfWork.Save();
         }
 
+
         public void UpdateMovie(MovieDTO movieDTO)
         {
-            var movie = _mapper.Map<Movie>(movieDTO);
-            _unitOfWork.MovieRepository.Update(movie);
+            var existingMovie = _unitOfWork.MovieRepository.GetByID(movieDTO.Id);
+            if (existingMovie == null) return;
+
+            _mapper.Map(movieDTO, existingMovie);
+
+            // Clear previous relationships
+            existingMovie.MovieGenres.Clear();
+            existingMovie.MovieActors.Clear();
+
+            // Add new relationships
+            existingMovie.MovieGenres = movieDTO.Genres
+                .Select(genreId => new MovieGenre { MovieId = existingMovie.Id, GenreId = genreId })
+                .ToList();
+
+            existingMovie.MovieActors = movieDTO.Actors
+                .Select(actorId => new MovieActor { MovieId = existingMovie.Id, ActorId = actorId })
+                .ToList();
+
+            _unitOfWork.MovieRepository.Update(existingMovie);
             _unitOfWork.Save();
         }
+
 
         public void DeleteMovie(int id)
         {
