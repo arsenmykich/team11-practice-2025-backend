@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Data_Access_Layer.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Data_Access_Layer.Data
 {
-    public class CinemaContext : DbContext
+    public class CinemaContext : IdentityDbContext<User, Role, int>
     {
         public CinemaContext(DbContextOptions<CinemaContext> options) : base(options)
         {   }
@@ -17,14 +19,23 @@ namespace Data_Access_Layer.Data
         public DbSet<Entities.Director> Directors { get; set; }
         public DbSet<Entities.Genre> Genres { get; set; }
         public DbSet<Entities.Movie> Movies { get; set; }
-        public DbSet<Entities.Role> Roles { get; set; }
         public DbSet<Entities.SalesStatistics> SalesStatistics { get; set; }
         public DbSet<Entities.Session> Sessions { get; set; }
-        public DbSet<Entities.User> Users { get; set; }
         public DbSet<Entities.Hall> Halls { get; set; }
         public DbSet<Entities.Seat> Seats { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>().ToTable("AspNetUsers");
+            modelBuilder.Entity<Role>().ToTable("AspNetRoles");
+
+
+            modelBuilder.Entity<Role>().HasData(
+            new Role { Id = 1, Name = "Admin", NormalizedName = "ADMIN" },
+            new Role { Id = 2, Name = "User", NormalizedName = "USER" }
+        );
+
             //modelBuilder.Entity<Movie>()
             //    .HasMany(m => m.Actors)
             //    .WithMany(a => a.Movies)
@@ -134,17 +145,19 @@ namespace Data_Access_Layer.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
 
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Role)
-                .WithMany(r => r.Users)
-                .HasForeignKey(u => u.RoleId)
-                .OnDelete(DeleteBehavior.Restrict);
+            
 
             modelBuilder.Entity<Hall>()
                 .HasMany(h => h.Seats)
                 .WithOne(s => s.Hall)
                 .HasForeignKey(s => s.HallId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+
+
+           
+
+
 
 
         }
