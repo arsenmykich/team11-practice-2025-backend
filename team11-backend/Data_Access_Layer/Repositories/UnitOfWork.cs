@@ -18,7 +18,6 @@ namespace Data_Access_Layer.Repositories
         private GenericRepository<Booking> bookingRepository;
         private GenericRepository<Director> directorRepository;
         private GenericRepository<Genre> genreRepository;
-        private GenericRepository<Role> roleRepository;
         private GenericRepository<SalesStatistics> salesStatisticsRepository;
         private GenericRepository<Session> sessionRepository;
         private GenericRepository<User> userRepository;
@@ -94,17 +93,7 @@ namespace Data_Access_Layer.Repositories
             }
         }
 
-        public GenericRepository<Role> RoleRepository
-        {
-            get
-            {
-                if (this.roleRepository == null)
-                {
-                    this.roleRepository = new GenericRepository<Role>(context);
-                }
-                return roleRepository;
-            }
-        }
+        
 
         public GenericRepository<SalesStatistics> SalesStatisticsRepository
         {

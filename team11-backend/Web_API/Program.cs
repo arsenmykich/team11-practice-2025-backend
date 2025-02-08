@@ -19,6 +19,10 @@ using Business_Logic_Layer.Mappings;
 using AutoMapper;
 using Business_Logic_Layer.Services;
 using Business_Logic_Layer.DTOs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Data;
 
 
 
@@ -36,6 +40,38 @@ namespace Web_API
             builder.Services.AddDbContext<CinemaContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("CinemaDb")));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            //Identity
+            builder.Services.AddIdentity<User, Role>()
+                .AddEntityFrameworkStores<CinemaContext>()
+                .AddDefaultTokenProviders();
+
+            //JWT
+            var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+            var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]);
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; 
+            })
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+        ValidAudience = builder.Configuration["JwtSettings:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]))
+    };
+});
+
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -48,13 +84,37 @@ namespace Web_API
             builder.Services.AddScoped<BookingService>();
             builder.Services.AddScoped<DirectorService>();
             builder.Services.AddScoped<GenreService>();
-            builder.Services.AddScoped<RoleService>();
             builder.Services.AddScoped<SalesStatisticsService>();
             builder.Services.AddScoped<SessionService>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<SeatService>();
             builder.Services.AddScoped<HallService>();
+            builder.Services.AddScoped<AuthService>();
 
+
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Enter 'Bearer {your JWT token}'"
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+            },
+            new string[] {}
+        }
+    });
+            });
 
             var app = builder.Build();
 
@@ -66,10 +126,9 @@ namespace Web_API
             }
 
             app.UseHttpsRedirection();
-
+            app.UseRouting();
             app.UseAuthorization();
-
-
+            app.UseAuthorization();
             app.MapControllers();
 
             app.Run();

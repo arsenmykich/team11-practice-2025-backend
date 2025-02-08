@@ -11,6 +11,7 @@ using Data_Access_Layer.Repositories;
 using Business_Logic_Layer.DTOs;
 using Business_Logic_Layer.Services;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web_API.Controllers
 {
@@ -23,6 +24,9 @@ namespace Web_API.Controllers
         {
             _actorService = actorService;
         }
+
+
+        [Authorize]
         [HttpGet]
         public IActionResult Get()
         {

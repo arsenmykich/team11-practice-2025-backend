@@ -29,8 +29,6 @@ namespace Business_Logic_Layer.Mappings
             CreateMap<DirectorDTO, Director>();
             CreateMap<Genre, GenreDTO>();
             CreateMap<GenreDTO, Genre>();
-            CreateMap<Role, RoleDTO>();
-            CreateMap<RoleDTO, Role>();
             CreateMap<HallDTO, Hall>();
             CreateMap<Hall, HallDTO>();
             CreateMap<SeatDTO, Seat>();
