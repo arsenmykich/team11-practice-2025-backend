@@ -34,12 +34,15 @@ namespace Web_API.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var movie = _movieService.GetMovieById(id);
-            if (movie == null)
-            {
+            //var movie = _movieService.GetMovieById(id);
+            //if (movie == null)
+            //{
+            //    return NotFound();
+            //}
+            //return Ok(movie);
+            if(_movieService.GetMovieById(id) == null)
                 return NotFound();
-            }
-            return Ok(movie);
+            return Ok(_movieService.GetMovieById(id));
         }
 
         [HttpPost]
