@@ -23,14 +23,55 @@ namespace Business_Logic_Layer.Services
 
         public IEnumerable<MovieDTO> GetAllMovies()
         {
-            var movies = _unitOfWork.MovieRepository.Get();
-            return _mapper.Map<IEnumerable<MovieDTO>>(movies);
+            var movies = _unitOfWork.MovieRepository.Get(includeProperties: "MovieGenres.Genre,MovieActors.Actor");
+
+            return movies.Select(movie => new MovieDTO
+            {
+                Id = movie.Id,
+                FilmName = movie.FilmName,
+                Description = movie.Description,
+                Trailer = movie.Trailer,
+                Duration = movie.Duration,
+                AgeRating = movie.AgeRating,
+                ReleaseDate = movie.ReleaseDate,
+                PosterPath = movie.PosterPath,
+                BackgroundImagePath = movie.BackgroundImagePath,
+                VoteAverage = movie.VoteAverage,
+                VoteCount = movie.VoteCount,
+                DirectorId = movie.DirectorId,
+                Genres = movie.MovieGenres.Select(mg => mg.GenreId).ToList(),
+                Actors = movie.MovieActors.Select(ma => ma.ActorId).ToList()
+            }).ToList();
         }
 
         public MovieDTO GetMovieById(int id)
         {
-            var movie = _unitOfWork.MovieRepository.GetByID(id);
-            return _mapper.Map<MovieDTO>(movie);
+            //var movie = _unitOfWork.MovieRepository.GetByID(id);
+            //return _mapper.Map<MovieDTO>(movie);
+            var movie = _unitOfWork.MovieRepository.Get(
+                filter: m => m.Id == id,
+                includeProperties: "MovieGenres.Genre,MovieActors.Actor"
+                ).FirstOrDefault();
+
+            if (movie == null) return null;
+
+            return new MovieDTO
+            {
+                Id = movie.Id,
+                FilmName = movie.FilmName,
+                Description = movie.Description,
+                Trailer = movie.Trailer,
+                Duration = movie.Duration,
+                AgeRating = movie.AgeRating,
+                ReleaseDate = movie.ReleaseDate,
+                PosterPath = movie.PosterPath,
+                BackgroundImagePath = movie.BackgroundImagePath,
+                VoteAverage = movie.VoteAverage,
+                VoteCount = movie.VoteCount,
+                DirectorId = movie.DirectorId,
+                Genres = movie.MovieGenres.Select(mg => mg.GenreId).ToList(),
+                Actors = movie.MovieActors.Select(ma => ma.ActorId).ToList()
+            };
         }
 
         public void AddMovie(MovieDTO movieDTO)
