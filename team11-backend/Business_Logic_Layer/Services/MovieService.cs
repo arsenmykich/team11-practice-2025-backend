@@ -78,7 +78,6 @@ namespace Business_Logic_Layer.Services
         {
             var movie = _mapper.Map<Movie>(movieDTO);
 
-            // Fetch genres and actors from DB
             movie.MovieGenres = movieDTO.Genres
                 .Select(genreId => new MovieGenre { GenreId = genreId })
                 .ToList();
@@ -94,27 +93,32 @@ namespace Business_Logic_Layer.Services
 
         public void UpdateMovie(MovieDTO movieDTO)
         {
-            var existingMovie = _unitOfWork.MovieRepository.GetByID(movieDTO.Id);
-            if (existingMovie == null) return;
+            var movie = _unitOfWork.MovieRepository.Get(
+                filter: m => m.Id == movieDTO.Id,
+                includeProperties: "MovieGenres,MovieActors"
+            ).FirstOrDefault();
 
-            _mapper.Map(movieDTO, existingMovie);
+            if (movie == null) return;
 
-            // Clear previous relationships
-            existingMovie.MovieGenres.Clear();
-            existingMovie.MovieActors.Clear();
+            movie.FilmName = movieDTO.FilmName;
+            movie.Description = movieDTO.Description;
+            movie.Trailer = movieDTO.Trailer;
+            movie.Duration = movieDTO.Duration;
+            movie.AgeRating = movieDTO.AgeRating;
+            movie.ReleaseDate = movieDTO.ReleaseDate;
+            movie.PosterPath = movieDTO.PosterPath;
+            movie.BackgroundImagePath = movieDTO.BackgroundImagePath;
+            movie.VoteAverage = movieDTO.VoteAverage;
+            movie.VoteCount = movieDTO.VoteCount;
+            movie.DirectorId = movieDTO.DirectorId;
 
-            // Add new relationships
-            existingMovie.MovieGenres = movieDTO.Genres
-                .Select(genreId => new MovieGenre { MovieId = existingMovie.Id, GenreId = genreId })
-                .ToList();
+            movie.MovieGenres = movieDTO.Genres.Select(gId => new MovieGenre { MovieId = movie.Id, GenreId = gId }).ToList();
+            movie.MovieActors = movieDTO.Actors.Select(aId => new MovieActor { MovieId = movie.Id, ActorId = aId }).ToList();
 
-            existingMovie.MovieActors = movieDTO.Actors
-                .Select(actorId => new MovieActor { MovieId = existingMovie.Id, ActorId = actorId })
-                .ToList();
-
-            _unitOfWork.MovieRepository.Update(existingMovie);
+            _unitOfWork.MovieRepository.Update(movie);
             _unitOfWork.Save();
         }
+
 
 
         public void DeleteMovie(int id)
