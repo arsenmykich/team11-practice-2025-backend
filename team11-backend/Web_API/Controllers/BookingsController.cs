@@ -11,6 +11,7 @@ using Data_Access_Layer.Repositories;
 using Business_Logic_Layer.DTOs;
 using Business_Logic_Layer.Services;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Web_API.Controllers
 {
@@ -24,7 +25,7 @@ namespace Web_API.Controllers
             _bookingService = bookingService;
         }
 
-        [Authorize]
+        
         [HttpGet]
         public IActionResult Get()
         {
@@ -41,13 +42,24 @@ namespace Web_API.Controllers
             return Ok(booking);
         }
         [HttpPost]
-        public IActionResult Post([FromBody] BookingDTO bookingDTO)
+        public async Task<IActionResult> CreateBooking([FromBody] BookingRequest bookingRequest)
         {
-            if (bookingDTO == null)
-                return BadRequest();
-            _bookingService.AddBooking(bookingDTO);
-            return Ok();
+            
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null) return Unauthorized("User not found");
+
+            int userId = int.Parse(userIdClaim.Value);
+
+            
+            var createdBooking = await _bookingService.CreateBookingAsync(userId, bookingRequest);
+
+            if (createdBooking == null)
+                return BadRequest("Booking failed. Seat may be taken or incorrect hall.");
+
+            return Ok(createdBooking);
         }
+
+
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] BookingDTO bookingDTO)
         {

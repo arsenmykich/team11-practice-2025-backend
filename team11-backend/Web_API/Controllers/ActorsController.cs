@@ -26,7 +26,7 @@ namespace Web_API.Controllers
         }
 
 
-        [Authorize]
+        
         [HttpGet]
         public IActionResult Get()
         {
