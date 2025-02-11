@@ -35,6 +35,46 @@ namespace Business_Logic_Layer.Services
             _unitOfWork.BookingRepository.Insert(booking);
             _unitOfWork.Save();
         }
+
+
+        public async Task<BookingDTO?> CreateBookingAsync(int userId, BookingRequest bookingRequest)
+        {
+            
+            bool isSeatAvailable = await _unitOfWork.BookingRepository.IsSeatAvailableAsync(bookingRequest.SessionId, bookingRequest.SeatId);
+            if (!isSeatAvailable) return null;
+
+            
+            bool isSeatInCorrectHall = await _unitOfWork.BookingRepository.IsSeatInCorrectHallAsync(bookingRequest.SessionId, bookingRequest.SeatId);
+            if (!isSeatInCorrectHall) return null;
+
+            
+            float price = await _unitOfWork.BookingRepository.GetSessionPriceAsync(bookingRequest.SessionId);
+
+            var booking = new Booking
+            {
+                UserId = userId,
+                SessionId = bookingRequest.SessionId,
+                SeatId = bookingRequest.SeatId,
+                BookingDate = DateTime.UtcNow,
+                Price = price
+            };
+
+             _unitOfWork.BookingRepository.Insert(booking);
+             _unitOfWork.Save();
+
+            
+            return new BookingDTO
+            {
+                Id = booking.Id,
+                UserId = booking.UserId,
+                SessionId = booking.SessionId,
+                SeatId = booking.SeatId,
+                BookingDate = booking.BookingDate,
+                Price = booking.Price
+            };
+        }
+
+
         public void UpdateBooking(BookingDTO bookingDTO)
         {
             var booking = _mapper.Map<Booking>(bookingDTO);

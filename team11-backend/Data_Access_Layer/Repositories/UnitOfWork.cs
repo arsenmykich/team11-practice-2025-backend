@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Data_Access_Layer.Data;
 using Data_Access_Layer.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Data_Access_Layer.Repositories
 {
@@ -15,7 +16,7 @@ namespace Data_Access_Layer.Repositories
         // Repositories for each entity
         private GenericRepository<Actor> actorRepository;
         private GenericRepository<Movie> movieRepository;
-        private GenericRepository<Booking> bookingRepository;
+        private BookingRepository _bookingRepository;
         private GenericRepository<Director> directorRepository;
         private GenericRepository<Genre> genreRepository;
         private GenericRepository<SalesStatistics> salesStatisticsRepository;
@@ -57,15 +58,15 @@ namespace Data_Access_Layer.Repositories
         }
 
         // Repeat this pattern for all other entities...
-        public GenericRepository<Booking> BookingRepository
+        public BookingRepository BookingRepository
         {
             get
             {
-                if (this.bookingRepository == null)
+                if (_bookingRepository == null)
                 {
-                    this.bookingRepository = new GenericRepository<Booking>(context);
+                    _bookingRepository = new BookingRepository(context);
                 }
-                return bookingRepository;
+                return _bookingRepository;
             }
         }
 
