@@ -57,17 +57,38 @@ namespace Web_API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = movieDTO.Id }, movieDTO);
         }
 
+        //[HttpPut("{id}")]
+        //public IActionResult Put(int id, [FromBody] MovieDTO movieDTO)
+        //{
+        //    if (movieDTO == null || movieDTO.Id != id)
+        //    {
+        //        return BadRequest();
+        //    }
+
+        //    _movieService.UpdateMovie(movieDTO);
+        //    return NoContent();
+        //}
+
+
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] MovieDTO movieDTO)
+        public ActionResult<MovieDTO> Put(int id, [FromBody] MovieDTO movieDTO)
         {
             if (movieDTO == null || movieDTO.Id != id)
             {
                 return BadRequest();
             }
 
-            _movieService.UpdateMovie(movieDTO);
-            return NoContent();
+            var updatedMovie = _movieService.UpdateMovie(movieDTO);
+            if (updatedMovie == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(updatedMovie);
         }
+
+
+
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
