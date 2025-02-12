@@ -19,6 +19,26 @@ namespace Business_Logic_Layer.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
+        public async Task<(List<int> availableSeats, List<int> reservedSeats)> GetSeatAvailabilityAsync(int sessionId)
+        {
+            //var allSeats =  _unitOfWork.SeatRepository.Get().ToList();
+
+            var allSeats = _unitOfWork.SeatRepository
+                .Get(s => s.Hall.Sessions.Any(sess => sess.Id == sessionId))
+                .Select(s => s.Id)
+                .ToList();
+
+            var reservedSeats =  _unitOfWork.BookingRepository
+                .Get(b => b.SessionId == sessionId)
+                .Select(b => b.SeatId)
+                .ToList(); 
+
+            var availableSeats = allSeats.Except(reservedSeats).ToList();
+
+            return (availableSeats, reservedSeats);
+        }
+
         public IEnumerable<SessionDTO> GetAllSessions()
         {
             var sessions = _unitOfWork.SessionRepository.Get();

@@ -58,5 +58,12 @@ namespace Web_API.Controllers
             _sessionService.DeleteSession(id);
             return NoContent();
         }
+        [HttpGet("{sessionId}/seats")]
+        public async Task<IActionResult> GetSeatAvailability(int sessionId)
+        {
+            var result = await _sessionService.GetSeatAvailabilityAsync(sessionId);
+            return Ok(new { availableSeats = result.availableSeats, reservedSeats = result.reservedSeats });
+        }
+
     }
 }
