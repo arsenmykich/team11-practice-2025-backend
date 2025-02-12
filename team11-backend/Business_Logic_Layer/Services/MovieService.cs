@@ -91,14 +91,14 @@ namespace Business_Logic_Layer.Services
         }
 
 
-        public void UpdateMovie(MovieDTO movieDTO)
+        public MovieDTO UpdateMovie(MovieDTO movieDTO)
         {
             var movie = _unitOfWork.MovieRepository.Get(
                 filter: m => m.Id == movieDTO.Id,
                 includeProperties: "MovieGenres,MovieActors"
             ).FirstOrDefault();
 
-            if (movie == null) return;
+            if (movie == null) return null;
 
             movie.FilmName = movieDTO.FilmName;
             movie.Description = movieDTO.Description;
@@ -117,6 +117,24 @@ namespace Business_Logic_Layer.Services
 
             _unitOfWork.MovieRepository.Update(movie);
             _unitOfWork.Save();
+
+            return new MovieDTO
+            {
+                Id = movie.Id,
+                FilmName = movie.FilmName,
+                Description = movie.Description,
+                Trailer = movie.Trailer,
+                Duration = movie.Duration,
+                AgeRating = movie.AgeRating,
+                ReleaseDate = movie.ReleaseDate,
+                PosterPath = movie.PosterPath,
+                BackgroundImagePath = movie.BackgroundImagePath,
+                VoteAverage = movie.VoteAverage,
+                VoteCount = movie.VoteCount,
+                DirectorId = movie.DirectorId,
+                Genres = movie.MovieGenres.Select(mg => mg.GenreId).ToList(),
+                Actors = movie.MovieActors.Select(ma => ma.ActorId).ToList()
+            };
         }
 
 
