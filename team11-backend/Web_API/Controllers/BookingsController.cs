@@ -74,5 +74,25 @@ namespace Web_API.Controllers
             _bookingService.DeleteBooking(id);
             return NoContent();
         }
+        [HttpGet("user-seats")]
+        public async Task<IActionResult> GetUserSeats(int userId, int sessionId)
+        {
+            var seats = await _bookingService.GetUserBookedSeatsAsync(userId, sessionId);
+
+            if (seats == null || seats.Count == 0)
+                return NotFound("No seats found for this session.");
+
+            return Ok(seats);
+        }
+        [HttpGet("all-seats")]
+        public async Task<IActionResult> GetAllSeats(int sessionId)
+        {
+            var seats = await _bookingService.GetAllBookedSeatsAsync(sessionId);
+
+            if (seats == null || seats.Count == 0)
+                return NotFound("No seats found for this session.");
+
+            return Ok(seats);
+        }
     }
 }
