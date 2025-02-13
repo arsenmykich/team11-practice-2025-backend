@@ -81,6 +81,21 @@ namespace Business_Logic_Layer.Services
             _unitOfWork.BookingRepository.Update(booking);
             _unitOfWork.Save();
         }
+        public async Task<List<int>> GetUserBookedSeatsAsync(int userId, int sessionId)
+        {
+            return _unitOfWork.BookingRepository
+                .Get(b => b.UserId == userId && b.SessionId == sessionId)
+                .Select(b => b.SeatId)
+                .ToList();
+        }
+
+        public async Task<List<int>> GetAllBookedSeatsAsync(int sessionId)
+        {
+            return _unitOfWork.BookingRepository
+                .Get(b => b.SessionId == sessionId)
+                .Select(b => b.SeatId)
+                .ToList();
+        }
         public void DeleteBooking(int id)
         {
             _unitOfWork.BookingRepository.Delete(id);
