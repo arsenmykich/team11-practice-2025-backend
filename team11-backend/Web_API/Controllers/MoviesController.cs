@@ -10,6 +10,7 @@ using Data_Access_Layer.Entities;
 using Data_Access_Layer.Repositories;
 using Business_Logic_Layer.DTOs;
 using Business_Logic_Layer.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web_API.Controllers
 {
@@ -46,6 +47,7 @@ namespace Web_API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Post([FromBody] MovieDTO movieDTO)
         {
             if (movieDTO == null)
@@ -71,6 +73,7 @@ namespace Web_API.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public ActionResult<MovieDTO> Put(int id, [FromBody] MovieDTO movieDTO)
         {
             if (movieDTO == null || movieDTO.Id != id)
@@ -91,10 +94,18 @@ namespace Web_API.Controllers
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
+            var movie = _movieService.GetMovieById(id);
+
+            if (movie == null)
+            {
+                return NotFound(new { message = "Movie not found" });
+            }
+
             _movieService.DeleteMovie(id);
-            return NoContent();
+            return Ok(new { message = "Movie deleted successfully" });
         }
     }
 }

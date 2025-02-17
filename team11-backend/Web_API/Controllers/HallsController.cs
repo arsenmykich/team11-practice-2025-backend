@@ -1,5 +1,6 @@
 ﻿using Business_Logic_Layer.DTOs;
 using Business_Logic_Layer.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web_API.Controllers
@@ -28,6 +29,7 @@ namespace Web_API.Controllers
             return Ok(hall);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Post([FromBody] HallDTO hallDTO)
         {
             if (hallDTO == null)
@@ -36,6 +38,7 @@ namespace Web_API.Controllers
             return Ok();
         }
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Put(int id, [FromBody] HallDTO hallDTO)
         {
             if (hallDTO == null || id != hallDTO.Id)
@@ -44,10 +47,18 @@ namespace Web_API.Controllers
             return NoContent();
         }
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
+            var hall = _hallService.GetHallById(id);
+
+            if (hall == null)
+            {
+                return NotFound(new { message = "Hall not found" });
+            }
+
             _hallService.DeleteHall(id);
-            return NoContent();
+            return Ok(new { message = "Hall deleted successfully" });
         }
     }
 }

@@ -10,6 +10,7 @@ using Data_Access_Layer.Entities;
 using Data_Access_Layer.Repositories;
 using Business_Logic_Layer.DTOs;
 using Business_Logic_Layer.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web_API.Controllers
 {
@@ -37,6 +38,7 @@ namespace Web_API.Controllers
             return Ok(session);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Post([FromBody] SessionDTO sessionDTO)
         {
             if (sessionDTO == null)
@@ -45,6 +47,7 @@ namespace Web_API.Controllers
             return Ok();
         }
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Put(int id, [FromBody] SessionDTO sessionDTO)
         {
             if (sessionDTO == null || id != sessionDTO.Id)
@@ -53,11 +56,21 @@ namespace Web_API.Controllers
             return NoContent();
         }
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
+            var session = _sessionService.GetSessionById(id);
+
+            if (session == null)
+            {
+                return NotFound(new { message = "Session not found" });
+            }
+
             _sessionService.DeleteSession(id);
-            return NoContent();
+            return Ok(new { message = "Session deleted successfully" });
         }
+
+
         [HttpGet("{sessionId}/seats")]
         public async Task<IActionResult> GetSeatAvailability(int sessionId)
         {
