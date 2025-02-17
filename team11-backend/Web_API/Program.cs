@@ -1,4 +1,4 @@
- using System.Text;
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Data_Access_Layer.Data;
 using Data_Access_Layer.Entities;
@@ -45,6 +45,19 @@ namespace Web_API
             builder.Services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<CinemaContext>()
                 .AddDefaultTokenProviders();
+            // Конфігурація CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins", policy =>
+                {
+                    policy.WithOrigins("http://localhost:3000")
+                          .AllowAnyMethod()
+                          .AllowAnyHeader()
+                          .AllowCredentials();
+                });
+
+            });
+
 
             //JWT
             var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -53,7 +66,7 @@ namespace Web_API
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; 
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
 .AddJwtBearer(options =>
 {
@@ -75,7 +88,7 @@ namespace Web_API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            
+
             builder.Services.AddScoped<UnitOfWork>();
             //builder.Services.AddAutoMapper(typeof(MappingProfile));
             builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -90,7 +103,7 @@ namespace Web_API
             builder.Services.AddScoped<SeatService>();
             builder.Services.AddScoped<HallService>();
             builder.Services.AddScoped<AuthService>();
-
+ 
 
             builder.Services.AddSwaggerGen(options =>
             {
@@ -125,10 +138,12 @@ namespace Web_API
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            app.UseCors("AllowAllOrigins"); // CORS має бути до UseRouting
             app.UseRouting();
+            app.UseHttpsRedirection();
+            app.UseAuthentication(); // Додаємо Authentication перед Authorization
             app.UseAuthorization();
-            app.UseAuthorization();
+
             app.MapControllers();
 
             app.Run();
