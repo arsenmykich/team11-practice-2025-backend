@@ -10,6 +10,7 @@ using Data_Access_Layer.Entities;
 using Data_Access_Layer.Repositories;
 using Business_Logic_Layer.DTOs;
 using Business_Logic_Layer.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web_API.Controllers
 {
@@ -37,6 +38,7 @@ namespace Web_API.Controllers
             return Ok(genre);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Post([FromBody] GenreDTO genreDTO)
         {
             if (genreDTO == null)
@@ -45,6 +47,7 @@ namespace Web_API.Controllers
             return Ok();
         }
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Put(int id, [FromBody] GenreDTO genreDTO)
         {
             if (genreDTO == null || id != genreDTO.Id)
@@ -53,10 +56,18 @@ namespace Web_API.Controllers
             return NoContent();
         }
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
+            var genre = _genreService.GetGenreById(id);
+
+            if (genre == null)
+            {
+                return NotFound(new { message = "Genre not found" });
+            }
+
             _genreService.DeleteGenre(id);
-            return NoContent();
+            return Ok(new { message = "Genre deleted successfully" });
         }
     }
 }

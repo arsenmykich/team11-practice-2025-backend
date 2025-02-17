@@ -32,7 +32,7 @@ namespace Web_API.Controllers
             var bookings = _bookingService.GetAllBookings();
             return Ok(bookings);
         }
-        [Authorize(Roles ="Admin")]
+
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -41,6 +41,7 @@ namespace Web_API.Controllers
                 return NotFound();
             return Ok(booking);
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateBooking([FromBody] BookingRequest bookingRequest)
         {
@@ -68,12 +69,23 @@ namespace Web_API.Controllers
             _bookingService.UpdateBooking(bookingDTO);
             return NoContent();
         }
+
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
+            var booking = _bookingService.GetBookingById(id);
+
+            if (booking == null)
+            {
+                return NotFound(new { message = "Booking not found" });
+            }
+
             _bookingService.DeleteBooking(id);
-            return NoContent();
+            return Ok(new { message = "Booking deleted successfully" });
         }
+
+
         [HttpGet("user-seats")]
         public async Task<IActionResult> GetUserSeats(int userId, int sessionId)
         {

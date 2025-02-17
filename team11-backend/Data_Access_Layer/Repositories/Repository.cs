@@ -61,17 +61,28 @@ namespace Data_Access_Layer.Repositories
         public virtual void Delete(object id)
         {
             TEntity entityToDelete = dbSet.Find(id);
+            if (entityToDelete == null)
+            {
+                throw new KeyNotFoundException($"Entity with id {id} not found.");
+            }
             Delete(entityToDelete);
         }
 
         public virtual void Delete(TEntity entityToDelete)
         {
+            if (entityToDelete == null)
+            {
+                throw new ArgumentNullException(nameof(entityToDelete), "Entity to delete cannot be null.");
+            }
+
             if (context.Entry(entityToDelete).State == EntityState.Detached)
             {
                 dbSet.Attach(entityToDelete);
             }
+
             dbSet.Remove(entityToDelete);
         }
+
 
         public virtual void Update(TEntity entityToUpdate)
         {

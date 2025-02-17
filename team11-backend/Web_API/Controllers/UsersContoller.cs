@@ -52,11 +52,19 @@ namespace Web_API.Controllers
             _userService.UpdateUser(userDTO);
             return NoContent();
         }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
+            var user = _userService.GetUserById(id);
+
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found" });
+            }
+
             _userService.DeleteUser(id);
-            return NoContent();
+            return Ok(new { message = "User deleted successfully" });
         }
     }
 }

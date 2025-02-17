@@ -1,5 +1,6 @@
 ﻿using Business_Logic_Layer.DTOs;
 using Business_Logic_Layer.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web_API.Controllers
@@ -31,6 +32,7 @@ namespace Web_API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Post([FromBody] SeatDTO seatDTO)
         {
             if (seatDTO == null)
@@ -40,6 +42,7 @@ namespace Web_API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Put(int id, [FromBody] SeatDTO seatDTO)
         {
             if (seatDTO == null || id != seatDTO.Id)
@@ -49,10 +52,18 @@ namespace Web_API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
+            var seat = _seatService.GetSeatsById(id);
+
+            if (seat == null)
+            {
+                return NotFound(new { message = "Seat not found" });
+            }
+
             _seatService.DeleteSeat(id);
-            return NoContent();
+            return Ok(new { message = "Seat deleted successfully" });
         }
     }
 }

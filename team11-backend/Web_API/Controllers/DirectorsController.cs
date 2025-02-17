@@ -10,6 +10,7 @@ using Data_Access_Layer.Entities;
 using Data_Access_Layer.Repositories;
 using Business_Logic_Layer.DTOs;
 using Business_Logic_Layer.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web_API.Controllers
 {
@@ -37,6 +38,7 @@ namespace Web_API.Controllers
             return Ok(director);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Post([FromBody] DirectorDTO directorDTO)
         {
             if (directorDTO == null)
@@ -45,6 +47,7 @@ namespace Web_API.Controllers
             return Ok();
         }
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Put(int id, [FromBody] DirectorDTO directorDTO)
         {
             if (directorDTO == null || id != directorDTO.Id)
@@ -52,11 +55,22 @@ namespace Web_API.Controllers
             _directorService.UpdateDirector(directorDTO);
             return NoContent();
         }
+
+
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
+            var director = _directorService.GetDirectorById(id);
+
+            if (director == null)
+            {
+                return NotFound(new { message = "Director not found" });
+            }
+
             _directorService.DeleteDirector(id);
-            return NoContent();
+            return Ok(new { message = "Director deleted successfully" });
         }
+
     }
 }

@@ -42,6 +42,7 @@ namespace Web_API.Controllers
             return Ok(actor);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Post([FromBody] ActorDTO actorDTO)
         {
             if (actorDTO == null)
@@ -50,6 +51,7 @@ namespace Web_API.Controllers
             return Ok();
         }
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Put(int id, [FromBody] ActorDTO actorDTO)
         {
             if (actorDTO == null || id != actorDTO.Id)
@@ -57,11 +59,22 @@ namespace Web_API.Controllers
             _actorService.UpdateActor(actorDTO);
             return NoContent();
         }
+
+
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
+            var actor = _actorService.GetActorById(id);
+
+            if (actor == null)
+            {
+                return NotFound(new { message = "Actor not found" });
+            }
+
             _actorService.DeleteActor(id);
-            return NoContent();
+            return Ok(new { message = "Actor deleted successfully" });
         }
+
     }
 }
